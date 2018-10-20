@@ -1,0 +1,9 @@
+name: legos
+channels:
+  - defaults
+dependencies:
+  - matplotlib
+  - numpy
+  - pandas
+  - pip:
+    - pytest
