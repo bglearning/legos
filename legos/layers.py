@@ -1,14 +1,16 @@
 import numpy as np
 
+from legos import activation_functions
+
 
 class Layer:
-    def forward_pass(self, input):
-        """Computes the output for the input.
+    def forward(self, input):
+        """Compute the output for the input.
         """
         raise NotImplementedError()
 
-    def backward_pass(self, accum_grad):
-        """Computes gradient to propagate backward
+    def backward(self, accum_grad):
+        """Compute gradient to propagate backward
 
         Say, `x` is the layer's input and `y` is its output.
         Now, the layer receives the accumulated gradient dJ/dy i.e
@@ -111,4 +113,27 @@ class Linear(Layer):
 
     def backward(self, accum_grad):
         return self._backward(accum_grad)
+
+
+class Activation(Layer):
+    """A Layer that applies an activation function to its inputs.
+
+    Attributes
+    ---------
+    name: str
+        Name of the activation function to use.
+        Should be available in `activation_functions`.
+    """
+    def __init__(self, name):
+        self.name = name
+        self.activation = activation_functions.get(name)
+        self.input = None
+
+    def forward(self, input):
+        # Remember input for backward pass
+        self.input = input
+        return self.activation(input)
+
+    def backward(self, accum_grad):
+        return accum_grad * self.activation.gradient(self.input)
 
