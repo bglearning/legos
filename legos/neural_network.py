@@ -64,3 +64,17 @@ class NeuralNetwork:
             self._backward_pass(grad)
 
         return training_loss
+
+    def predict(self, X):
+        """Generate Predictions for given input.
+
+        Parameters
+        ----------
+        X: Tensor
+            The inputs
+
+        Returns
+        -------
+        Tensor containing list of predictions.
+        """
+        return self._forward_pass(X)
