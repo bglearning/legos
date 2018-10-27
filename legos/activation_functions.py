@@ -32,10 +32,28 @@ class ReLU:
         return np.where(x >= 0, 1, 0)
 
 
+class Softmax:
+    def __call__(self, x):
+        # Max subtracted off for numerical stability
+        # See: http://cs231n.github.io/linear-classify/#softmax
+        # Axis is -1 to denote the "innermost" axis.
+        e_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
+        return e_x / e_x.sum(axis=-1)
+
+    def gradient(self, x):
+        # The derivative of softmax with respect to input logit is
+        # a matrix of size dim(logit) x dim(logit) where:
+        # D_{ij} = s_{i} (1 - s_{j}) = s_{i} - s_{i} * s_{j} when i = j and
+        # D_{ij} = s_{i} * s_{j} when i != j
+        s = self.__call__(x).reshape(-1, 1)
+        return np.diagflat(s) - np.dot(s, s.T)
+
+
 ACTIVATIONS = {
     'sigmoid': Sigmoid(),
     'tanh': TanH(),
-    'relu': ReLU()
+    'relu': ReLU(),
+    'softmax': Softmax()
 }
 
 
